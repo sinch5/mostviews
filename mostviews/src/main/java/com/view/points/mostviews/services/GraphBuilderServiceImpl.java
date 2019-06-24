@@ -8,10 +8,7 @@ import reactor.core.publisher.Mono;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import com.view.points.mostviews.utils.JsonHelper;
@@ -42,10 +39,10 @@ public class GraphBuilderServiceImpl implements GraphBuilderService {
 
         var locations = places.split("\\|");
         var allPlaces = Arrays.stream(locations).map(s ->  placesService.findByName(s)).collect(Collectors.toList());
-
+/*
         for (int i=0; i< allPlaces.size(); i++) {
             JsonHelper.writeObject("places" + locations[i] +"Response.json", allPlaces.get(i).block());
-        }
+        }*/
         var candidates = allPlaces.stream().
                 map(placeResponseMono -> placeResponseMono.block()).
                 map(placeResponse -> placeResponse.getCandidates().get(0)).
@@ -53,10 +50,10 @@ public class GraphBuilderServiceImpl implements GraphBuilderService {
 
         final List<PlaceDetails> details = candidates.stream().map(candidate -> placeDetailsService.findById(candidate.getPlace_id())).map(Mono::block).collect(Collectors.toList());
 
-        for (int i=0; i< allPlaces.size(); i++) {
-            JsonHelper.writeObject("placeDetails" + locations[i] +"Response.json", details.get(i));
-
-        }
+//        for (int i=0; i< allPlaces.size(); i++) {
+//            JsonHelper.writeObject("placeDetails" + locations[i] +"Response.json", details.get(i));
+//
+//        }
 
         String query = details.
                 stream().
@@ -67,12 +64,14 @@ public class GraphBuilderServiceImpl implements GraphBuilderService {
 
         return  distanceMatrixService.buildMatrix(query).map(directMatrixResponse -> {
 
+/*
             JsonHelper.writeObject("distanceMatrixResponce.json", directMatrixResponse);
+*/
 
             List<Location> locationList =
                     IntStream.range(0, directMatrixResponse.getOrigin_addresses().size()).
                     mapToObj(i -> createLocation(directMatrixResponse, details, i, now)).collect(Collectors.toList());
-
+                    //locationList.add(locationList.get(0));
                     return locationList.stream().
                     collect(
                         Collectors.toMap(locationFrom -> locationFrom,
@@ -87,7 +86,7 @@ public class GraphBuilderServiceImpl implements GraphBuilderService {
     }
 
     private Location addWay(Location from, Location to, DirectMatrixResponse directMatrixResponse) {
-        TextValue trafficTime = directMatrixResponse.getRows().get(from.getNumber()).getElements().get(to.getNumber()).getDuration_in_traffic();
+        TextValue trafficTime = directMatrixResponse.getRows().get(from.getNumber()).getElements().get(to.getNumber()).getDuration_in_traffic().orElse(new TextValue(-1L, ""));
         TextValue time = directMatrixResponse.getRows().get(from.getNumber()).getElements().get(to.getNumber()).getDuration();
 
         Way way = new Way(from, to,trafficTime!=null?trafficTime.getValue():time.getValue()/*element.getDuration_in_traffic().getValue()*/);// TODO add real period
@@ -113,7 +112,8 @@ public class GraphBuilderServiceImpl implements GraphBuilderService {
     }
 
     private static <U> U duplicateKeysProcess(U u, U u1) {
-        throw new RuntimeException("duplicated params");
+       // throw new RuntimeException("duplicated params");
+        return  u;
     }
 
     private static LocalTime parseTime(String str) {

@@ -20,11 +20,12 @@ public class PathFinderServiceImpl implements PathFinderService {
                     if (arrivalTime.compareTo(way.getDestination().getOpeningTime()) == -1) {
                         arrivalTime = way.getDestination().getOpeningTime();
                     }
-                    LocalTime endViewing = arrivalTime.plusHours(way.getDestination().getDuration());
+                    LocalTime endViewing = arrivalTime.plusSeconds(way.getDestination().getDuration());
                     if (endViewing.compareTo(way.getDestination().getClosingTime()) < 1 || LocalTime.of(0,0).equals(way.getDestination().getClosingTime())) {
                         ways.add(way);
                         location = way.getDestination();
                         startTime = endViewing;
+                        location.setEndView(endViewing);
                     }
                 }
             }

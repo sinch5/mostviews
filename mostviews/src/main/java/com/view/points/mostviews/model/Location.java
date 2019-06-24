@@ -12,6 +12,7 @@ public class Location {
     private final LocalTime closingTime;
     private final LocalTime openingTime;
     private final String address;
+    private LocalTime endView;
 
     @JsonIgnore
     private final List<Way> ways = new ArrayList();
@@ -91,5 +92,13 @@ public class Location {
 
     public void setDuration(Integer duration) {
         this.duration = duration;
+    }
+
+    public LocalTime getEndView() {
+        return endView;
+    }
+
+    public void setEndView(LocalTime endView) {
+        this.endView = endView;
     }
 }

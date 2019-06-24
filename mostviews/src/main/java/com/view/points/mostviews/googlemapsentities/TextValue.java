@@ -4,6 +4,11 @@ public class TextValue {
     private Long value;
     private String text;
 
+    public TextValue(Long value, String text) {
+        this.value = value;
+        this.text = text;
+    }
+
     public Long getValue() {
         return value;
     }

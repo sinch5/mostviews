@@ -20,6 +20,7 @@ public class TripAdvisorServiceImpl implements TripAdvisorService {
     private Map<Location, List<Location>> matrix;
 
     private List<Integer> vertex = new ArrayList<>();
+    private List<Integer> minLoc;
 
     public TripAdvisorServiceImpl(PathFinderService pathFinderService, GraphBuilderService graphBuilderService) {
         this.pathFinderService = pathFinderService;
@@ -30,7 +31,9 @@ public class TripAdvisorServiceImpl implements TripAdvisorService {
     public List<Way> getBestRouteTrip(String places) {
         matrix = graphBuilderService.buildGraph(places);
         vertex = IntStream.generate(() -> -1).limit(matrix.size() + 1).boxed().collect(Collectors.toList());
-        return backtrack(vertex, 0, matrix.size());
+        List<Way> ways =backtrack(vertex, 0, matrix.size());
+        pathFinderService.calculateRoute(ways.get(0).getSource(), minLoc);
+        return ways;
     }
 
     private List<Way> backtrack(List<Integer> a, int k, int input) {
@@ -74,20 +77,24 @@ public class TripAdvisorServiceImpl implements TripAdvisorService {
         List<Integer> routes = a.subList(1, a.size()-1);
         Map.Entry<Location, List<Location>> entry = matrix.entrySet().iterator().next();
 
+        //List<Integer> listWithBack  = new ArrayList(routes);
+        //listWithBack.add(a.get(0));
         List<Way>  rt = pathFinderService.calculateRoute(entry.getKey(), routes);
         Long sum = 0L;
         for (Way way: rt) {
             sum = sum + way.getPathLengthInTime();
         }
-        if (sum.compareTo(this.sum)==-1 && rt.size()==routes.size()) {
+        if (sum.compareTo(this.sum)==-1 && rt.size() == routes.size()) {
             this.sum = sum;
             this.minRoutes = rt;
+            this.minLoc= new ArrayList<>(routes);
+
         }
         return minRoutes;
     }
 
     private boolean isSolution(int k, int n) {
-        return (k==n);
+        return (k == n);
     }
 
 }
