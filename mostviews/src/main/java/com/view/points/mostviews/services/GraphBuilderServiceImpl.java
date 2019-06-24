@@ -86,8 +86,8 @@ public class GraphBuilderServiceImpl implements GraphBuilderService {
     }
 
     private Location addWay(Location from, Location to, DirectMatrixResponse directMatrixResponse) {
-        TextValue trafficTime = directMatrixResponse.getRows().get(from.getNumber()).getElements().get(to.getNumber()).getDuration_in_traffic().orElse(new TextValue(-1L, ""));
         TextValue time = directMatrixResponse.getRows().get(from.getNumber()).getElements().get(to.getNumber()).getDuration();
+        TextValue trafficTime = directMatrixResponse.getRows().get(from.getNumber()).getElements().get(to.getNumber()).getDuration_in_traffic().orElse(time);
 
         Way way = new Way(from, to,trafficTime!=null?trafficTime.getValue():time.getValue()/*element.getDuration_in_traffic().getValue()*/);// TODO add real period
         from.addWay(way);

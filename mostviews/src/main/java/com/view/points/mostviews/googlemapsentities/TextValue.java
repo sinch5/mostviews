@@ -4,6 +4,9 @@ public class TextValue {
     private Long value;
     private String text;
 
+    public TextValue() {
+    }
+
     public TextValue(Long value, String text) {
         this.value = value;
         this.text = text;
