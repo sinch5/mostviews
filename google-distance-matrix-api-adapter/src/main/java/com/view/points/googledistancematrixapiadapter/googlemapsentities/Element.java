@@ -2,12 +2,14 @@ package com.view.points.googledistancematrixapiadapter.googlemapsentities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Optional;
+
 public class Element {
     private TextValue distance;
     private TextValue duration;
 
     @JsonProperty("duration_in_traffic")
-    private TextValue duration_in_traffic;
+    private Optional<TextValue> duration_in_traffic;
     private String status;
 
     public TextValue getDistance() {
@@ -26,11 +28,11 @@ public class Element {
         this.duration = duration;
     }
 
-    public TextValue getDuration_in_traffic() {
+    public Optional<TextValue> getDuration_in_traffic() {
         return duration_in_traffic;
     }
 
-    public void setDuration_in_traffic(TextValue duration_in_traffic) {
+    public void setDuration_in_traffic(Optional<TextValue> duration_in_traffic) {
         this.duration_in_traffic = duration_in_traffic;
     }
 

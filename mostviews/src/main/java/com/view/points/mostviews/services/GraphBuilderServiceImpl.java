@@ -31,7 +31,7 @@ public class GraphBuilderServiceImpl implements GraphBuilderService {
     /**
      *
      * @param places  which are wanted to be visited. first one of them is source location
-     * @return
+     * @return map of ways
      */
     public Map<Location, List<Location>> buildGraph(String places) {
 
